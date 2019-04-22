@@ -1,0 +1,122 @@
+---
+title: "Untitled"
+author: "Villaseñor-Derbez J.C."
+date: "10/4/2019"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    code_folding: "hide"
+header-includes: \usepackage{mathtools}
+---
+
+
+
+```{r setup}
+
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F)
+
+suppressPackageStartupMessages({
+  library(ISLR)
+  library(class)
+  library(skimr)
+  library(tidyverse)
+})
+
+
+```
+
+
+# Load and inspect the data
+
+```{r}
+carseats <- ISLR::Carseats
+
+skim(carseats)
+```
+
+
+# Feature enginiering
+
+We create a new feature High as the response variable following the rule: If sales are higher than the median sales, then 1. Else then 0. We will also remove some of the variables that we don't care about.
+
+
+```{r}
+carseats <- carseats %>% 
+  mutate(High = ifelse(Sales > median(Sales), "High", "Low")) %>%
+  select(-Sales, -ShelveLoc, -Urban, -US)
+```
+
+
+# Create testing and training sets
+
+```{r}
+# Set random seed
+set.seed(42)
+
+# Sample 50% observations as training data
+train <- sample(1:nrow(carseats), 200)
+carseats_train <- carseats[train,]
+
+# The rest 50% as test data
+carseats_test = carseats[-train,]
+```
+
+# Break the dataframe into untidy things
+
+```{r}
+# Training set
+YTrain <- carseats_train$High
+XTrain <- carseats_train %>% 
+  select(-High)
+
+# Testing set
+YTest<- carseats_test$High
+XTest <- carseats_test %>% 
+  select(-High)
+```
+
+
+# Train the model
+
+```{r}
+set.seed(42)
+pred_YTrain <- knn(train = XTrain, test = XTrain, cl = YTrain, k=2)
+```
+
+
+# Evaluate performance
+
+```{r}
+conf_train <- table(predicted = pred_YTrain, true = YTrain)
+conf_train
+```
+
+
+```{r}
+sum(diag(conf_train)/sum(conf_train))
+```
+
+# Train again, but evaluate predictions on testing set
+
+
+```{r}
+set.seed(42)
+pred_YTest <- knn(train = XTrain, test = XTest, cl = YTrain, k=2)
+```
+
+
+# Evaluate performance
+
+```{r}
+conf_test <- table(predicted = pred_YTest, true = YTest)
+conf_test
+```
+
+
+```{r}
+sum(diag(conf_test)/sum(conf_test))
+```
+
