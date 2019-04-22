@@ -1,11 +1,13 @@
 ---
-title: "Assignment 1"
+title: "Assignment 1[^*]"
 subtitle: "PSTAT 231"
 author: "Villaseñor-Derbez J.C. | 8749749"
 output:
   bookdown::pdf_document2:
     toc: no
 ---
+
+[^*]: Code available on GitHUb at: https://github.com/jcvdav/PSTAT231/tree/master/docs/assig1
 
 ```{r setup}
 # Default options
