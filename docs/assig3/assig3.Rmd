@@ -21,6 +21,8 @@ suppressPackageStartupMessages({
   library(tree)
   library(maptree)
   library(ROCR)
+  library(dendextend)
+  library(superheat)
   library(ggridges)
   library(tidyverse)
 })
@@ -212,7 +214,9 @@ cv_drug_tidy %>%
 
 ## Prune the tree to the size found in the previous part and plot the tree using the `draw.tree` function from the maptree package. Set `nodeinfo = TRUE`. Which variable is split first in this decision tree?
 
-```{r}
+The first variable to split the data is `Age`.
+
+```{r, fig.height = 6, fig.width = 8}
 drug_tree_pruned <- prune.tree(tree = drug_tree, best = 36)
 
 draw.tree(drug_tree_pruned)
@@ -266,8 +270,8 @@ tibble(fpr = log_perf@x.values[[1]],
 
 
 ```{r}
-log_auc <- performance(log_pred, "auc")@y.values[[1]]
-tree_auc <- performance(tree_pred, "auc")@y.values[[1]]
+performance(log_pred, "auc")@y.values[[1]]
+performance(tree_pred, "auc")@y.values[[1]]
 ```
 
 The AUC for logistic is $AUC_{logistic} = 0.59$ and the AUC for the tree is $AUC_{tree} = 0.49$.
@@ -291,7 +295,7 @@ table(leukemia_data$Type) %>%
                col.names = c("Type", "Frequency"))
 ```
 
-The least common leukemia subtype is BCR-ABL, with 15 cases.
+The least common leukemia subtype is `BCR-ABL`, with 15 cases.
 
 ## Run PCA on the leukemia data using `prcomp` function with `scale = TRUE` and `center = TRUE` (this scales each gene to have mean 0 and variance 1). Make sure you exclude the `Type` column when you run the PCA function (we are only interested in reducing the dimension of the gene expression values and PCA doesn’t work with categorical data anyway). Plot the proportion of variance explained by each principal component (PVE) and the cumulative PVE side-by-side.
 
@@ -331,29 +335,142 @@ leuk_pca$x %>%
   as_tibble() %>% 
   mutate(Type = leukemia_data$Type) %>% 
   ggplot(aes(x = PC1, y = PC2, fill = Type)) +
-  geom_point()
+  geom_point(size = 2, alpha = 0.5) +
+  scale_fill_manual(values = rainbow_colors)
 ```
 
 
+### Which group is most clearly separated from the others along the PC1 axis?
+
+The `T-ALL` (purple) cluster is the furthest appart in the PC1, with coordinates at about (30, 20).
+
+### Which genes have the highest absolute loadings for PC1 (the genes that have the largest weights in the weighted average used to create the new variable PC1)?
+
+```{r}
+#Get the genes with the top 10 absolute loadings ofr PC1
+leuk_pca$rotation[,1] %>%
+  abs() %>%
+  sort(decreasing = T) %>% 
+  head()
+```
 
 
+## PCA orders the principal components according to the amount of total variation in the data that they explain. This does not mean, however, that the principal components are sorted in terms of how useful they are at capturing variation between the leukemia groups. For example, if gene expression varied significantly with age and gender (independent of leukemia status), the first principal components could reflect genetic variation due to age and gender, but not to leukemia. The first scatter plot shows that the second PC is not a good discriminator of leukemia type. See if the 3rd PC is better at discriminating between leukemia types by plotting the data projected onto the first and third principal components (not the second).
+
+```{r}
+leuk_pca$x %>% 
+  as_tibble() %>% 
+  mutate(Type = leukemia_data$Type) %>% 
+  ggplot(aes(x = PC1, y = PC3, fill = Type)) +
+  geom_point(size = 2, alpha = 0.5) +
+  scale_fill_manual(values = rainbow_colors)
+```
+
+##  For this part we will be using the `ggridges` library. Create a new tibble where the first column (call it `z1`) is the projection of the data onto the first principal component and the second column is the leukemia subtype (`Type`). Use `ggplot` with `geom_density_ridges` to create multiple stacked density plots of the projected gene expression data. Set the `ggplot` aesthetics to `aes(x = z1, y = Type, fill = Type)`. Make another identical plot, except replace `z1` with `z3`, the projection of the data onto the third principal component. Identify two leukemia subtypes that are nearly indistinguishable when the gene expression data is projected onto the first PC direction, but easily distinguishable when projected onto the third PC direction.
+
+```{r}
+leuk_dat <- leukemia_data %>% 
+  select(-Type) %>% 
+  as.matrix()
+
+z1 <- leuk_dat %*% leuk_pca$rotation[,1]
+z3 <- leuk_dat %*% leuk_pca$rotation[,3]
+
+projections <- tibble(z1 = as.vector(z1),
+                      z3 = as.vector(z3),
+                      Type = leukemia_data$Type)
+
+z1_plot <- ggplot(data = projections, aes(x = z1, y = Type, fill = Type)) +
+  geom_density_ridges() +
+  theme(legend.position = "None")
+
+z3_plot <- ggplot(data = projections, aes(x = z3, y = Type, fill = Type)) +
+  geom_density_ridges() +
+  theme(legend.position = "None")
+```
+
+The figure below shows that Hyperdip50 and OTHERS have similar distributions when projected to PC1. However, in PC3 these two types are now different.
+
+```{r, fig.width = 4, fig.height = 8}
+cowplot::plot_grid(z1_plot, z3_plot,
+                   ncol = 1,
+                   labels = "AUTO")
+```
 
 
+## Use the `filter` command to create a new `tibble` `leukemia_subset` by subsetting to include only rows for which `Type` is either `T-ALL`, `TEL-AML1`, or `Hyperdip50`. Compute a euclidean distance matrix between the subjects using the `dist` function and then run hierarchical clustering using complete linkage. Plot two dendrograms based on the hierarchical clustering result. In the first plot, force 3 leukemia types to be the labels of terminal nodes, color the branches and labels to have 3 groups and rotate the dendrogram counterclockwise to have all the terminal nodes on the right. In the second plot, do all the same things except that this time color all the branches and labels to have 5 groups. Please make sure library `dendextend` is installed. Hint: as.dendrogram, set_labels, color_branches, color_labels and plot(..., horiz = TRUE) may be useful.
 
 
+```{r}
+leukemia_subset <- leukemia_data %>% 
+  filter(Type %in% c("T-ALL", "TEL-AML1", "Hyperdip50")) %>% 
+  arrange(Type)
+
+leukemia_hclust <- leukemia_subset %>% 
+  select(-Type) %>% 
+  scale() %>% 
+  dist() %>% 
+  hclust(method = "complete")
+```
 
 
+```{r, fig.height = 6, fig.width = 6}
+leukemia_hclust %>% 
+  as.dendrogram() %>% 
+  color_labels(k = 3) %>% 
+  color_branches(k = 3) %>% 
+  set_labels(labels = leukemia_subset$Type) %>% 
+  plot(horiz = TRUE)
+```
+
+```{r, fig.height = 6, fig.width = 6}
+leukemia_hclust %>% 
+  as.dendrogram() %>% 
+  color_labels(k = 5) %>% 
+  color_branches(k = 5) %>% 
+  set_labels(labels = leukemia_subset$Type) %>% 
+  plot(horiz = TRUE)
+```
+
+## Use superheat to plot the distance matrix from the part above. Order the rows and columns by the hierarchical clustering you obtained in the previous part. You should see a matrix with a block diagonal structure. The labels (corresponding to leukemia types) will not be available to read on the plot. Print them out by looking at leukemia_subset$Type ordered by clustering order. Based on this plot which two leukemia types (of the three in the subset) seem more similar to one another? Hint: use heat.pal = c("dark red", "red", "orange", "yellow")) for colorbar specification in superheat.
+
+```{r}
+leuk_dist <- leukemia_subset %>% 
+  select(-Type) %>% 
+  scale() %>% 
+  dist() %>% 
+  as.matrix()
+
+superheat(leuk_dist[leukemia_hclust$order, leukemia_hclust$order],
+          heat.pal = c("dark red", "red", "orange", "yellow"))
+```
+```{r}
+leukemia_subset$Type[leukemia_hclust$order]
+```
+
+Leukemia types `T-ALL` and `TEL-AML1` seem to be similar to each other, more than `Hyperdip50`.
+
+## You can also use superheat to generate a hierachical clustering dendrogram or a kmeans clustering. First, use `leukemia_subset` to run hierachical clustering and draw the dendrogram. Second, use the same dataset to run kmeans clustering with three the optimal number of clusters, and order the genes (columns) based on hierarchical clustering.
+
+Sorry about this one, I don't think the instructions were clear enough. But I think I created something that makes sense.
 
 
+```{r}
+leukemia_kmeans <- leukemia_subset %>% 
+  select(-Type) %>% 
+  scale() %>% 
+  dist() %>% 
+  kmeans(centers = 3)
+```
 
 
-
-
-
-
-
-
-
+```{r}
+superheat(leuk_dist[leukemia_hclust$order, leukemia_hclust$order],
+          row.dendrogram = T,
+          clustering.method = "kmeans",
+          membership.cols = leukemia_kmeans$cluster,
+          pretty.order.cols = T)
+```
 
 
 
