@@ -1,0 +1,206 @@
+---
+title: "Final Project[^*]"
+subtitle: "PSTAT 231"
+author: "Villaseñor-Derbez J.C. | 8749749"
+output: 
+  bookdown::pdf_document2: 
+    fig_caption: yes
+---
+
+[^*]: Code available on GitHUb at: https://github.com/jcvdav/PSTAT231/tree/master/final_project
+
+1. What makes voter behavior prediction (and thus election forecasting) a hard problem?
+
+2. What was unique to Nate Silver’s approach in 2012 that allowed him to achieve good predictions?
+
+3. What went wrong in 2016? What do you think should be done to make future predictions better?
+
+```{r echo = F}
+suppressPackageStartupMessages({
+  library(startR)
+  library(here)
+  library(maps)
+  library(sf)
+  library(tidyverse)
+})
+```
+
+```{r, echo = F}
+# Some housekeeping
+update_geom_defaults("point", list(fill = "steelblue",
+                                   color = "black",
+                                   shape = 21,
+                                   size = 2))
+
+update_geom_defaults("bar", list(fill = "steelblue",
+                                 color = "black",
+                                 size = 1))
+
+update_geom_defaults("col", list(fill = "steelblue",
+                                 color = "black",
+                                 size = 1))
+
+update_geom_defaults("boxplot", list(fill = "steelblue",
+                                     color = "black",
+                                     size = 1))
+
+update_geom_defaults("line", list(color = "black",
+                                  size = 1))
+
+update_geom_defaults("density", list(fill = "steelblue",
+                                     color = "black",
+                                     size = 1,
+                                     alpha = 0.5))
+# 
+# update_geom_defaults("density_ridges", list(fill = "steelblue",
+#                                      color = "black",
+#                                      size = 1,
+#                                      alpha = 0.5))
+
+update_geom_defaults("ribbon", list(fill = "steelblue",
+                                     color = "transparent",
+                                     size = 0,
+                                     alpha = 0.5))
+
+update_geom_defaults("rug", list(color = "black",
+                                 size = 1))
+
+update_geom_defaults("sf", list(color = "black"))
+
+# Set global theme
+theme_set(startR::ggtheme_plot())
+```
+
+
+4. Remove summary rows from election.raw data:
+
+- Federal-level summary into a election_federal.
+
+- State-level summary into a election_state.
+
+- Only county-level data is to be in election.
+
+```{r}
+election_raw <- read.csv(here("data", "election", "election.csv")) %>%
+  as_tibble()
+
+census_meta <- read.csv(here("data", "census", "metadata.csv"), sep = ";") %>%
+  as_tibble()
+
+census <- read.csv(here("data", "census","census.csv")) %>%
+  as_tibble() %>% 
+  mutate(CensusTract = as.factor(CensusTract))
+```
+
+```{r}
+election_federal <- election_raw %>% 
+  filter(fips == "US")
+
+election_state <- election_raw %>% 
+  filter(state != "US", is.na(county))
+
+election <- election_raw %>% 
+  filter(!is.na(county))
+```
+
+5. How many named presidential candidates were there in the 2016 election? Draw a bar chart of all votes received by each candidate
+
+There were `r length(unique(election_federal$candidate)) - 1` explicitly mentioned presidential candidates, plus a category of `None of these acandidates`. Figure \@ref(fig:candidate-votes) shows the votes (on a $log_{10}$-scale) that each candidate received.
+
+```{r candidate-votes, fig.height = 6, fig.width = 5, fig.cap = "Number of votes that each presidential candidate received in the 2018 Presidential Elections."}
+election_federal %>% 
+  group_by(candidate) %>% 
+  summarize(votes = sum(votes, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(candidate = fct_reorder(.f = candidate, .x = votes)) %>% 
+  ggplot(aes(x = candidate, y = votes)) +
+  geom_col() +
+  coord_flip() +
+  scale_y_continuous(trans = "log10") +
+  labs(x = "Candidate", y = "Votes (log-10 Scale)")
+```
+
+
+6. Create variables `county_winner` and `state_winner` by taking the candidate with the highest proportion of votes. Hint: to create `county_winner`, start with election, group by `fips`, compute total votes, and `pct = votes/total`. Then choose the highest row using `top_n` (variable `state_winner` is similar).
+
+```{r}
+county_winner <- election %>% 
+  group_by(fips) %>% 
+  mutate(total = sum(votes),
+         pct = votes / total) %>% 
+  top_n(1) %>% 
+  ungroup() %>% 
+  select(fips, winner = candidate)
+
+state_winner <- election_state %>% 
+  group_by(state) %>% 
+  mutate(total = sum(votes),
+         pct = votes / total) %>% 
+  top_n(1) %>% 
+  ungroup() %>% 
+  select(state, winner = candidate) %>% 
+  mutate(state = as.character(state))
+```
+
+7. Draw county-level map by creating `counties = map_data("county")`. Color by county
+
+```{r}
+my_fun <- function(long, lat) {
+  # long <- data$long
+  # lat <- data$lat
+  
+  data <- cbind(long, lat) %>% 
+    rbind(cbind(long[1], lat[1]))
+  st_sfc(st_polygon(list(as.matrix(data))))
+}
+
+state_dictionary <- tibble(abb = state.abb, state = tolower(state.name))
+
+states <- map_data("state") %>% 
+  group_by(group, region) %>% 
+  summarize(geometry = my_fun(long, lat)) %>% 
+  ungroup() %>% 
+  st_sf(crs = 4326) %>% 
+  left_join(state_dictionary, by = c("region" = "state"))
+
+counties <- map_data("county") %>% 
+  group_by(group, region, subregion) %>% 
+  summarize(geometry = my_fun(long, lat)) %>% 
+  ungroup() %>% 
+  st_sf(crs = 4326)
+```
+
+```{r}
+ggplot(data = counties,
+       mapping = aes(fill = subregion)) +
+  geom_sf(data = counties) +
+  ggtheme_map() +
+  theme(legend.position = "None")
+```
+
+Now color the map by the winning candidate for each state. First, combine states variable and `state_winner` we created earlier using `left_join()`. Note that `left_join()` needs to match up values of states to join the tables; however, they are in different formats: e.g. AZ vs. arizona. Before using `left_join()`, create a common column by creating a new column for states named `fips = state.abb[match(some_column, some_function(state.name))]`. Replace `some_column` and `some_function` to complete creation of this new column. Then `left_join()`. Your figure will look similar to `state_level` New York Times map.
+
+```{r}
+
+states %>% 
+  left_join(state_winner, by = c("abb" = "state")) %>% 
+  ggplot(mapping = aes(fill = winner)) +
+  geom_sf(color = "white") +
+  ggtheme_map() +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = guide_legend(title = "Winner"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
