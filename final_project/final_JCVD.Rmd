@@ -5,6 +5,10 @@ author: "Villaseñor-Derbez J.C. | 8749749"
 output: 
   bookdown::pdf_document2: 
     fig_caption: yes
+    toc: no
+header-includes:
+  - \usepackage{float}
+  - \floatplacement{figure}{h}
 ---
 
 [^*]: Code available on GitHUb at: https://github.com/jcvdav/PSTAT231/tree/master/final_project
@@ -19,9 +23,13 @@ output:
 suppressPackageStartupMessages({
   library(startR)
   library(here)
+  library(furrr)
   library(maps)
   library(sf)
   library(dendextend)
+  library(tree)
+  library(class)
+  library(maptree)
   library(tidyverse)
 })
 ```
@@ -31,7 +39,7 @@ suppressPackageStartupMessages({
 update_geom_defaults("point", list(fill = "steelblue",
                                    color = "black",
                                    shape = 21,
-                                   size = 2))
+                                   size = 4))
 
 update_geom_defaults("bar", list(fill = "steelblue",
                                  color = "black",
@@ -72,6 +80,7 @@ update_geom_defaults("sf", list(color = "black"))
 theme_set(startR::ggtheme_plot())
 ```
 
+\clearpage
 
 4. Remove summary rows from election.raw data:
 
@@ -104,6 +113,8 @@ election <- election_raw %>%
   filter(!is.na(county))
 ```
 
+\clearpage
+
 5. How many named presidential candidates were there in the 2016 election? Draw a bar chart of all votes received by each candidate
 
 There were `r length(unique(election_federal$candidate)) - 1` explicitly mentioned presidential candidates, plus a category of `None of these acandidates`. Figure \@ref(fig:candidate-votes) shows the votes (on a $log_{10}$-scale) that each candidate received.
@@ -121,6 +132,7 @@ election_federal %>%
   labs(x = "Candidate", y = "Votes (log-10 Scale)")
 ```
 
+\clearpage
 
 6. Create variables `county_winner` and `state_winner` by taking the candidate with the highest proportion of votes. Hint: to create `county_winner`, start with election, group by `fips`, compute total votes, and `pct = votes/total`. Then choose the highest row using `top_n` (variable `state_winner` is similar).
 
@@ -131,7 +143,6 @@ county_winner <- election %>%
          pct = votes / total) %>% 
   top_n(1) %>% 
   ungroup() %>% 
-  select(fips, winner = candidate) %>% 
   mutate(fips = as.numeric(as.character(fips)))
 
 state_winner <- election_state %>% 
@@ -140,22 +151,19 @@ state_winner <- election_state %>%
          pct = votes / total) %>% 
   top_n(1) %>% 
   ungroup() %>% 
-  select(state, winner = candidate) %>% 
   mutate(state = as.character(state))
 ```
+
+\clearpage
 
 7. Draw county-level map by creating `counties = map_data("county")`. Color by county
 
 ```{r}
 my_fun <- function(long, lat) {
-  # long <- data$long
-  # lat <- data$lat
-  
   data <- cbind(long, lat) %>% 
     rbind(cbind(long[1], lat[1]))
   st_sfc(st_polygon(list(as.matrix(data))))
 }
-
 state_dictionary <- tibble(abb = state.abb, state = tolower(state.name))
 
 states <- map_data("state") %>% 
@@ -172,7 +180,7 @@ counties <- map_data("county") %>%
   st_sf(crs = 4326)
 ```
 
-```{r}
+```{r, fig.cap = "Map of all US counties."}
 ggplot(data = counties,
        mapping = aes(fill = subregion)) +
   geom_sf(data = counties, color = "white") +
@@ -180,23 +188,26 @@ ggplot(data = counties,
   theme(legend.position = "None")
 ```
 
+\clearpage
+
 Now color the map by the winning candidate for each state. First, combine states variable and `state_winner` we created earlier using `left_join()`. Note that `left_join()` needs to match up values of states to join the tables; however, they are in different formats: e.g. AZ vs. arizona. Before using `left_join()`, create a common column by creating a new column for states named `fips = state.abb[match(some_column, some_function(state.name))]`. Replace `some_column` and `some_function` to complete creation of this new column. Then `left_join()`. Your figure will look similar to `state_level` New York Times map.
 
-```{r}
+```{r, fig.cap = "Map of US states colored by winning candidate."}
 states %>% 
   left_join(state_winner, by = c("abb" = "state")) %>% 
-  ggplot(mapping = aes(fill = winner)) +
+  ggplot(mapping = aes(fill = candidate)) +
   geom_sf(color = "white") +
   ggtheme_map() +
   scale_fill_brewer(palette = "Set1") +
   guides(fill = guide_legend(title = "Winner"))
 ```
 
+\clearpage
+
 9. The variable `county` does not have `fips` column. So we will create one by pooling information from `maps::county.fips`. Split the `polyname` column to `region` and `subregion`. Use `left_join()` to combine `county.fips` into county. Also, `left_join()` previously created variable `county_winner`. Your figure will look similar to county-level New York Times map.
 
 
-
-```{r}
+```{r, fig.cap = "Map of US counties colored by winning candidate."}
 county_fips <- maps::county.fips %>% 
   mutate(region = str_extract(polyname, ".+,"),
          subregion = str_extract(polyname, ",.+"),
@@ -207,12 +218,14 @@ county_fips <- maps::county.fips %>%
 counties %>% 
   left_join(county_fips, by = c("region", "subregion")) %>% 
   left_join(county_winner, by = "fips") %>% 
-  ggplot(mapping = aes(fill = winner)) +
+  ggplot(mapping = aes(fill = candidate)) +
   geom_sf(color = "white") +
   ggtheme_map() +
   scale_fill_brewer(palette = "Set1") +
   guides(fill = guide_legend(title = "Winner"))
 ```
+
+\clearpage
 
 10. Create a visualization of your choice using census data. Many exit polls noted that demographics played a big role in the election. Use this Washington Post article and this R graph gallery for ideas and inspiration.
 
@@ -230,24 +243,24 @@ model_data <- census %>%
          subregion = County) %>% 
   left_join(county_fips, by = c("region", "subregion")) %>% 
   left_join(county_winner, by = "fips") %>% 
-  drop_na(winner) %>% 
-  mutate(winner = ifelse(winner == "Hillary Clinton", 0, 1)) %>%
+  drop_na(candidate) %>% 
+  mutate(candidate = ifelse(candidate == "Hillary Clinton", 0, 1)) %>%
   select(-fips)
 ```
 
 I then fit a binary logistic regression, which predicts Hillary / Trump as options.
 
 ```{r}
-model <- glm(winner ~  TotalPop + Men + Hispanic + White + Black + Native + Asian + Pacific + Citizen, data = model_data, family = binomial)
+model <- glm(candidate ~  TotalPop + Men + Hispanic + White + Black + Native + Asian + Pacific + Citizen, data = model_data, family = binomial)
 ```
 
 I then take the predictions and plot them on a map. The map showing the predicted outcomes suggests that demographics are good predictors of election results. A regression table is also included.
 
-```{r}
+```{r, fig.cap = "Map of US counties colored by PREDICTED winning candidate as a function of some demographic characteristics."}
 model_pred <- model_data %>% 
   mutate(prediction = model$fitted.values,
          prediction = ifelse(prediction <= 0.5, "Hillary Clinton", "Donald Trump")) %>% 
-  select(region, subregion, prediction, winner)
+  select(region, subregion, prediction, candidate)
 
 counties %>% 
   left_join(model_pred, by = c("region", "subregion")) %>% 
@@ -265,11 +278,15 @@ stargazer::stargazer(model,
                      header = F)
 ```
 
+\clearpage
+
 11. The census data contains high resolution information (more fine-grained than county-level). In this problem, we aggregate the information into county-level data by computing TotalPop-weighted average of each attributes for each county. Create the following variables:
 
-- Clean census data census.del: start with census, filter out any rows with missing values, convert {Men, Employed, Citizen} attributes to a percentages (meta data seems to be inaccurate), compute Minority attribute by combining {Hispanic, Black, Native, Asian, Pacific}, remove {Walk, PublicWork, Construction}.
+- Clean census data `census.del`: start with `census`, filter out any rows with missing values, convert {Men, Employed, Citizen} attributes to a percentages (meta data seems to be inaccurate), compute Minority attribute by combining {Hispanic, Black, Native, Asian, Pacific}, remove {Walk, PublicWork, Construction}.
 
 Many columns seem to be related, and, if a set that adds up to 100%, one column will be deleted.
+
+I removed Women (complementary variable to Men) and all the variables that make up `Minority`.
 
 ```{r}
 census_del <- census %>% 
@@ -287,36 +304,45 @@ census_del <- census %>%
 census_subct <- census_del %>% 
   group_by(State, County) %>% 
   mutate(CountyTotal = sum(TotalPop)) %>% 
-  mutate(weight = TotalPop / CountyTotal)
+  mutate(weight = TotalPop / CountyTotal) %>% 
+  ungroup()
 ```
 
 
-- County census data, census.ct : start with census.subct, use summarize_at() to compute weighted sum
+- County census data, `census.ct`: start with `census.subct`, use `summarize_at()` to compute weighted mean
 
 ```{r}
 census_ct <- census_subct %>% 
-  summarize_at(.vars = vars(Men, Citizen, Income, IncomeErr, IncomePerCap, IncomePerCapErr, Poverty, ChildPoverty, Professional, Service, Office, Production, Drive, Carpool, Transit, OtherTransp, WorkAtHome, MeanCommute, Employed, PrivateWork, SelfEmployed, FamilyWork, Unemployment, minority), funs(weighted.mean(., w = weight)))
+  group_by(State, County) %>% 
+  summarize_at(.vars = vars(Men, Citizen, Income, IncomeErr,
+                            IncomePerCap, IncomePerCapErr,
+                            Poverty, ChildPoverty, Professional,
+                            Service, Office, Production, Drive,
+                            Carpool, Transit, OtherTransp, WorkAtHome,
+                            MeanCommute, Employed, PrivateWork,
+                            SelfEmployed, FamilyWork, Unemployment,
+                            minority), list(~ weighted.mean(., w = weight))) %>% 
+  ungroup()
 ```
 
-- Print few rows of census.ct :
-
+- Print few rows of `census.ct`:
 
 ```{r}
 head(census_ct)
 ```
 
-12. Run PCA for both county & sub-county level data. Save the first two principle components PC1 and PC2 into a two-column data frame, call it ct.pc and subct.pc, respectively.
+\clearpage
+
+12. Run PCA for both county & sub-county level data. Save the first two principle components `PC1` and `PC2` into a two-column data frame, call it `ct.pc` and `subct.pc`, respectively.
 
 ```{r}
 census_subct_pca <- census_subct %>% 
-  ungroup() %>% 
   select(-c(CensusTract, State, County, CountyTotal, weight)) %>% 
-  prcomp(scale = T)
+  prcomp(scale = T, center = T)
 
 census_ct_pca <- census_ct %>% 
-  ungroup() %>% 
   select(-c(State, County)) %>% 
-  prcomp(scale = T)
+  prcomp(scale = T, center = T)
 
 subct_pc <- tibble(PC1 = census_subct_pca$x[, 1],
                    PC2 = census_subct_pca$x[, 2])
@@ -328,7 +354,7 @@ ct_pc <- tibble(PC1 = census_ct_pca$x[, 1],
 
 What are the most prominent loadings?
 
-I calculate the total magnitude between the first two PCs, and then order them in descending order. For the subcounty data, the top 10 loadings are for the variables shown below. These same variables (arrows) can be seen in the biplot below.
+I calculate the total magnitude between the first two PCs, and then order them in descending order. For the sub-county data, the top 10 loadings are for the variables shown below. These same variables (arrows) can be seen in the biplot below.
 
 ```{r}
 tibble(var = rownames(census_subct_pca$rotation),
@@ -339,12 +365,14 @@ tibble(var = rownames(census_subct_pca$rotation),
   head(10)
 ```
 
-```{r}
+\clearpage
+
+```{r, fig.cap = "Biplot for subcounty PCA"}
 biplot(census_subct_pca, xlabs = rep(".", nrow(census_subct)))
 ```
 
 
-For the county-level data, the top 10 variables are shown in the table, and then again in the biplot.
+For the county-level data, the top 10 variables are shown in the table, and then again in the biplot. Variables `Drive` and `Income` appear again, suggesting that they are important at different scales. The biplot below shows this information again.
 
 ```{r}
 tibble(var = rownames(census_ct_pca$rotation),
@@ -355,12 +383,13 @@ tibble(var = rownames(census_ct_pca$rotation),
   head(10)
 ```
 
-```{r}
+```{r, fig.cap = "Biplot for county-level Principal Component Analyses."}
 biplot(census_ct_pca, xlabs = rep(".", nrow(census_ct)))
 ```
 
+\clearpage
 
-13. With census.ct, perform hierarchical clustering using Euclidean distance metric complete linkage to find 10 clusters. Repeat clustering process with the first 5 principal components of ct.pc. Compare and contrast clusters containing San Mateo County. Can you hypothesize why this would be the case?
+13. With `census.ct`, perform hierarchical clustering using Euclidean distance metric complete linkage to find 10 clusters. Repeat clustering process with the first 5 principal components of `ct.pc`. Compare and contrast clusters containing San Mateo County. Can you hypothesize why this would be the case?
 
 ```{r}
 census_ct_clust <- census_ct %>% 
@@ -377,8 +406,9 @@ census_ct_clust %>%
   as.dendrogram() %>% 
   color_labels(k = 10) %>% 
   color_branches(k = 10) %>% 
-  set_labels(labels = census_ct$County) %>%
-  plot(horiz = TRUE)
+  set_labels(labels = census_ct$County) %>% 
+  plot()
+rect.hclust(census_ct_clust, k = 10)
 ```
 
 ```{r}
@@ -391,18 +421,468 @@ census_ct_pca_clust %>%
   as.dendrogram() %>% 
   color_labels(k = 10) %>% 
   color_branches(k = 10) %>% 
-  set_labels(labels = census_ct$County) %>%
-  plot(horiz = TRUE)
+  set_labels(labels = census_ct$County) %>% 
+  plot()
+rect.hclust(census_ct_clust, k = 10)
+```
+
+
+\clearpage
+
+I took a slightly different, more tidy approach to prepping the data for classification. But they produce the same datasets.
+
+```{r}
+tmp_ct_winner <- county_winner %>% 
+  select(-c(county, state)) %>% 
+  left_join(county_fips, by = "fips") %>%
+  rename(county = subregion, state = region) %>% 
+  mutate(county = str_remove(county, pattern = "county | columbia | city | parish"))
+
+tmp_census_ct <- census_ct %>% 
+  mutate_at(vars(State, County), tolower) %>% 
+  rename(state = State, county = County)
+
+election_cl <- tmp_ct_winner %>% 
+  left_join(tmp_census_ct, by = c("state", "county")) %>% 
+  drop_na()
+
+election_cl_attr <- election_cl %>%
+  select(county, fips, state, votes, pct)
+
+attr(election_cl, "location") <- election_cl_attr
+
+election_cl <- election_cl %>%
+  select(-c(county, fips, state, votes, pct)) %>% 
+  mutate_at(vars(-candidate), scale)
+```
+
+Split into training and testing datasets
+
+```{r}
+set.seed(10)
+n <- nrow(election_cl)
+in.trn <- sample.int(n, 0.8*n)
+trn_cl <- election_cl[in.trn, ]
+tst_cl <- election_cl[-in.trn, ]
+```
+
+Create 10 cross-validation folds
+
+```{r}
+set.seed(20)
+nfold <- 10
+folds <- sample(cut(1:nrow(trn_cl),
+                    breaks = nfold,
+                    labels = FALSE))
+```
+
+Create functions and objects to be used throughout
+
+```{r}
+calc_error_rate <- function(predicted.value, true.value) {
+  mean(true.value!=predicted.value)
+}
+
+records <- matrix(NA, nrow = 2, ncol = 2)
+colnames(records) <- c("train.error","test.error")
+rownames(records) <- c("tree","knn")
+```
+
+\clearpage
+
+13. Decision tree: train a decision tree by `cv.tree()`. Prune tree to minimize misclassification. Be sure to use the folds from above for cross-validation. Visualize the trees before and after pruning. Save training and test errors to records variable.
+
+
+```{r}
+ctrl <- tree.control(nobs = length(trn_cl$candidate), minsize = 5, mindev = 1e-5)
+main_tree <- tree(candidate ~ ., data = trn_cl, control = ctrl)
+```
+
+
+```{r, fig.cap = "Original tree.", fig.width = 6, fig.height = 5}
+draw.tree(main_tree, nodeinfo = T, cex = 0.6)
+```
+
+```{r}
+# Perform cross validation
+cv_tree <- cv.tree(object = main_tree,
+                       rand = folds,
+                       method = "misclass")
+```
+
+Inspecting misclassification error visually and with a table, we see that a tree of size 8 produces the lowest misclassification error:
+
+```{r, fig.cap = "Misclassification error rates as a function of tree size."}
+plot(cv_tree)
+```
+
+```{r}
+# create a tidy version of the diagnostics
+cv_tree_tidy <- tibble(size = cv_tree$size,
+                       misclass = cv_tree$dev)
+
+# Find the smallest tree with the smallest misclassification error
+cv_tree_tidy %>% 
+  filter(misclass <= min(misclass)) %>% 
+  filter(size == min(size))
+```
+
+
+```{r}
+pruned_tree <- prune(main_tree, best = 9)
+```
+
+```{r, fig.cap = "Pruned tree", fig.width = 6, fig.height = 5}
+draw.tree(pruned_tree, nodeinfo = T, cex = 0.6)
+```
+
+```{r}
+predYtr <- predict(pruned_tree, type = "class")
+predYts <- predict(pruned_tree, type = "class", newdata = tst_cl)
+
+records[1, 1] <- calc_error_rate(predYtr, trn_cl$candidate)
+records[1, 2] <- calc_error_rate(predYts, tst_cl$candidate)
+```
+
+\clearpage
+
+14. K-nearest neighbor: train a KNN model for classification. Use cross-validation to determine the best number of neighbors, and plot number of neighbors vs. resulting training and validation errors. Compute test error and save to records.
+
+```{r}
+knn_cv <- function(chunkid, folddef, Xdat, Ydat, k){
+  # Training
+  # identify rows to be used in this fold
+  train <- (folddef!=chunkid)
+  # Extract predictors for this fold
+  Xtr <- Xdat[train, ]
+  # Extract outcome variable for this fold
+  Ytr <- Ydat[train]
+  
+  # Testing
+  # Get predictors for testing fold
+  Xvl <- Xdat[!train, ]
+  # Get outcomes for testing fold
+  Yvl <- Ydat[!train]
+  ## get classifications for current training chunks
+  predYtr <- knn(train = Xtr, test = Xtr, cl = Ytr, k = k)
+  
+  ## get classifications for current test chunk
+  predYvl <- knn(train = Xtr, test = Xvl, cl = Ytr, k = k)
+  
+  data.frame(train.error = calc_error_rate(predYtr, Ytr),
+             val.error = calc_error_rate(predYvl, Yvl))
+}
+```
+
+```{r}
+# Set up tunning parameter options
+kvec <- c(1, 5, 8, 10, 15, 20, 25, 30)
+
+# Set up covariates
+Xdat <- trn_cl %>% 
+  select(-candidate) %>% 
+  as.matrix()
+# Outcome variable
+Ydat <- trn_cl$candidate
+
+# Plan multiprocess for parallel fitting
+plan(multiprocess)
+# Fit all
+set.seed(1)
+out <- expand.grid(k = kvec, chunkid = 1:nfold) %>% 
+  as_tibble() %>% 
+  mutate(fit = future_map2(chunkid, k, knn_cv, folddef = folds, Xdat = Xdat, Ydat = Ydat)) %>% 
+  unnest()
+```
+
+```{r, fig.cap = "Misclassification errors for KNN CV."}
+ggplot(data = out, mapping = aes(x = k, y = val.error)) +
+  stat_summary(geom = "ribbon", fun.data = "mean_se") +
+  stat_summary(geom = "line", fun.y = "mean") +
+  geom_point() +
+  labs(x = "k", y = "Testing error")
+```
+
+
+```{r}
+best.kfold <- 5
+# Matrix of training data covariates
+Xtest <- tst_cl %>% 
+  select(-candidate) %>% 
+  as.matrix()
+
+# Outcome variable
+Ytest <- tst_cl$candidate
+
+set.seed(1)
+## get classifications for training set
+predYtr <- knn(train = Xdat, test = Xdat, cl = Ydat, k = best.kfold)
+
+## get classifications for testing set
+predYvl <- knn(train = Xdat, test = Xtest, cl = Ydat, k = best.kfold)
+
+records[2, 1] <- calc_error_rate(predYtr, Ydat)
+records[2, 2] <- calc_error_rate(predYvl, Ytest)
+```
+
+
+```{r}
+pca.records <- matrix(NA, nrow = 2, ncol = 2)
+colnames(pca.records) <- c("train.error","test.error")
+rownames(pca.records) <- c("tree","knn")
+```
+
+```{r}
+knitr::kable(pca.records, caption = "Testing and training errors for two different methods.")
+```
+
+
+\clearpage
+
+15. Compute principal components from the independent variables in training data. Then, determine the number of minimum number of PCs needed to capture 90% of the variance. Plot proportion of variance explained.
+
+```{r}
+trn_pca <- trn_cl %>% 
+  select(-candidate) %>% 
+  as.matrix() %>% 
+  prcomp(scale = T, center = T)
+```
+
+
+```{r, fig.cap = "Proportion of variance explained by the 25 components"}
+pca_var <- tibble(component = 1:length(trn_pca$sdev),
+       variance = trn_pca$sdev) %>% 
+  mutate(relative = variance / sum(variance),
+         cumulative = cumsum(relative))
+
+ggplot(data = pca_var ,
+       aes(x = component, y = relative)) +
+  geom_line(size = 0.5) +
+  geom_point() +
+  labs(x = "Principal Component", y = "Proportion of Variance") +
+  geom_vline(xintercept = 19, linetype = "dashed")
+```
+
+```{r, fig.cap = "Cumulative proportional variance explained"}
+ggplot(data = pca_var ,
+       aes(x = component, y = cumulative)) +
+  geom_point() +
+  labs(x = "Principal Component", y = "Cumulative Variance") +
+  geom_hline(yintercept = 0.9, linetype = "dashed") +
+  geom_vline(xintercept = 19, linetype = "dashed")
+```
+
+
+The following table shows that the first 19 PC are needed to explain 91% of the variance.
+```{r}
+pca_var %>% 
+  filter(cumulative >= 0.89)
+```
+
+16. Create a new training data by taking class labels and principal components. Call this variable `tr.pca`. Create the test data based on principal component loadings: i.e., transforming independent variables in test data to principal components space. Call this variable `test.pca`
+
+```{r}
+tr_pca <- as_tibble(trn_pca$x[, 1:19]) %>% 
+  mutate(candidate = trn_cl$candidate) %>% 
+  select(candidate, everything())
+
+test_dat <- tst_cl %>% 
+  select(-candidate) %>% 
+  as.matrix()
+
+project_loadings <- function(data, pca_obj, n_pc) {
+  # Define empty matrix
+  projected <- matrix(data = NA, nrow = nrow(data), ncol = n_pc)
+  
+  # Iterate across principal components
+  for(i in 1:n_pc) {
+    projected[, i] <- data %*% pca_obj$rotation[, i]
+  }
+  
+  colnames(projected) <- paste0("PC", 1:n_pc)
+  
+  return(as_tibble(projected))
+}
+
+test_pca <- project_loadings(data = test_dat, pca_obj = trn_pca, n_pc = 19) %>% 
+  mutate(candidate = tst_cl$candidate) %>% 
+  select(candidate, everything())
+```
+
+17. Decision tree: repeat training of decision tree models using principal components as independent variables. Record resulting errors.
+
+```{r}
+pca_main_tree <- tree(candidate ~ ., data = tr_pca, control = ctrl)
+```
+
+```{r, fig.cap = "Decission tree with PCA data"}
+draw.tree(pca_main_tree, nodeinfo = T, cex = 0.5)
+```
+
+```{r}
+pca_cv_tree <- cv.tree(object = pca_main_tree, rand = folds)
+```
+
+```{r, fig.cap = "Misclassification error rates as a function of tree size for PCA tree."}
+plot(pca_cv_tree)
+```
+
+```{r}
+# create a tidy version of the diagnostics
+pca_cv_tree_tidy <- tibble(size = pca_cv_tree$size,
+                       misclass = pca_cv_tree$dev)
+
+# Find the smallest tree with the smallest misclassification error
+pca_cv_tree_tidy %>% 
+  filter(misclass <= min(misclass)) %>% 
+  filter(size == min(size))
+```
+
+
+```{r}
+pca_pruned_tree <- prune(pca_main_tree, best = 7)
+```
+
+```{r, fig.cap = "Pruned decision tree using PCA data.", fig.width = 6, fig.height = 5}
+draw.tree(pca_pruned_tree, nodeinfo = T, cex = 0.6)
+```
+
+```{r}
+predYtr <- predict(pca_pruned_tree, type = "class")
+predYts <- predict(pca_pruned_tree, type = "class", newdata = test_pca)
+
+pca.records[1, 1] <- calc_error_rate(predYtr, tr_pca$candidate)
+pca.records[1, 2] <- calc_error_rate(predYts, test_pca$candidate)
 ```
 
 
 
 
+18. K-nearest neighbor: repeat training of KNN classifier using principal components as independent variables. Record resulting errors.
+
+
+```{r}
+# Set up covariates
+Xdat <- tr_pca %>% 
+  select(-candidate) %>% 
+  as.matrix()
+# Outcome variable
+Ydat <- tr_pca$candidate
+
+# Plan multiprocess for parallel fitting
+plan(multiprocess)
+# Fit all
+set.seed(1)
+out <- expand.grid(k = kvec, chunkid = 1:nfold) %>% 
+  as_tibble() %>% 
+  mutate(fit = future_map2(chunkid, k, knn_cv, folddef = folds, Xdat = Xdat, Ydat = Ydat)) %>% 
+  unnest()
+```
+
+```{r, fig.cap = "Misclassification errors for KNN CV using PCA covariates."}
+ggplot(data = out, mapping = aes(x = k, y = val.error)) +
+  stat_summary(geom = "ribbon", fun.data = "mean_se") +
+  stat_summary(geom = "line", fun.y = "mean") +
+  geom_point() +
+  labs(x = "k", y = "Testing error")
+```
+
+```{r}
+best.kfold <- 5
+# Matrix of training data covariates
+Xtest <- test_pca %>% 
+  select(-candidate) %>% 
+  as.matrix()
+
+# Outcome variable
+Ytest <- test_pca$candidate
+
+set.seed(1)
+## get classifications for training set
+predYtr <- knn(train = Xdat, test = Xdat, cl = Ydat, k = best.kfold)
+
+## get classifications for testing set
+predYvl <- knn(train = Xdat, test = Xtest, cl = Ydat, k = best.kfold)
+
+pca.records[2, 1] <- calc_error_rate(predYtr, Ydat)
+pca.records[2, 2] <- calc_error_rate(predYvl, Ytest)
+```
+
+```{r}
+knitr::kable(pca.records, caption = "Table showing training and testing errors for both methods when PCs are used to train the models.")
+```
 
 
 
+19. This is an open question. Interpret and discuss any insights gained and possible explanations. Use any tools at your disposal to make your case: visualize errors on the map, discuss what does/doesn’t seems reasonable based on your understand
 
 
+20. Propose and tackle at least one interesting question
+
+I will visualize the predictions of 3 models: decision tree, KNN, binary logistic regression. I will produce county-level maps of the predictions, and will use the PCA training dataset, and predict across the entire data.
+
+```{r}
+pca_logistic <- glm(candidate ~ ., data = tr_pca, family = binomial)
+```
+
+```{r}
+train_reconstruct <- cbind(election_cl_attr[in.trn, ], tr_pca)
+test_reconstruct <- cbind(election_cl_attr[-in.trn, ], test_pca)
+
+recons <- rbind(train_reconstruct, test_reconstruct) %>% 
+  mutate(tree_pred = predict(pca_pruned_tree, newdata = ., type = "class"),
+         logistic_pred = predict(pca_logistic, newdata = ., type = "response"),
+         logistic_pred = ifelse(logistic_pred >= 0.5, "Hillary Clinton", "Donald Trump"))
+
+test_knn <- recons %>% 
+  select(contains("PC")) %>% 
+  select(-pct)
+
+knn_pred <- knn(train = Xdat, test = test_knn , cl = Ydat, k = best.kfold)
+
+recons <- recons %>% 
+  mutate(knn_pred = knn_pred) %>% 
+  select(state, county, truth = candidate, tree_pred, knn_pred, logistic_pred) %>% 
+  mutate_at(vars(truth, tree_pred, knn_pred, logistic_pred), as.character)
+```
+
+
+```{r}
+predicted_winners <- counties %>% 
+  mutate(subregion = str_remove(subregion, pattern = "county | columbia | city | parish")) %>% 
+  left_join(recons, by = c("region" = "state", "subregion" = "county"))
+```
+
+```{r, fig.cap = "Map of predictions by decision tree"}
+ggplot(data = predicted_winners,
+                        mapping = aes(fill = tree_pred == truth)) +
+  geom_sf(color = "white") +
+  ggtheme_map() +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = guide_legend(title = "Prediction correct?"))
+```
+
+\clearpage
+
+```{r, fig.cap = "Map of predictions by KNN"}
+ggplot(data = predicted_winners,
+                       mapping = aes(fill = knn_pred == truth)) +
+  geom_sf(color = "white") +
+  ggtheme_map() +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = guide_legend(title = "Prediction correct?"))
+```
+
+\clearpage
+
+```{r, fig.cap = "Map of predictions by binary logistic regression"}
+ggplot(data = predicted_winners,
+                            mapping = aes(fill = logistic_pred == truth)) +
+  geom_sf(color = "white") +
+  ggtheme_map() +
+  scale_fill_brewer(palette = "Set1") +
+  guides(fill = guide_legend(title = "Prediction correct?"))
+```
 
 
 
