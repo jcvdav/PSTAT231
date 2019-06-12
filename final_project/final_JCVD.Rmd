@@ -15,9 +15,15 @@ header-includes:
 
 1. What makes voter behavior prediction (and thus election forecasting) a hard problem?
 
+There are a number of factors that make it difficult to predict the outcome of voting. Even if we now people's political affiliation, the simple act of going out and actually voting (think about it as probability of voting) is governed by many determinustic processes. Moreover, census or random sample questionaires of support for a candidate may obscure a person's true voting intentions. In the scope of this project, the have high ressolution at the sub-county level, but still focus on mean trends, rather than on individual-level characteristics.
+
 2. What was unique to Nate Silver’s approach in 2012 that allowed him to achieve good predictions?
 
+Unlike common polls, Nate combined predictions by many different polls, weighted by their historical accuracy, and demographic information about different electoral districts. This is, off course, in addition to standard ML procedures such as cross-validation and having testing and training dataset.
+
 3. What went wrong in 2016? What do you think should be done to make future predictions better?
+
+It is difficult to say what went wrong in 2016. My intuition is that not only were some polls skewed, but that the two strongest presidential candidates, Hillary and Trump, ma have caused a change in voting behavior -incentivizing more people to go out and vote. This, ultimately, might have changed the rules and conditions, as well as the composition, of total electoral turnout, compared to previous elections.
 
 ```{r echo = F}
 suppressPackageStartupMessages({
@@ -82,14 +88,6 @@ theme_set(startR::ggtheme_plot())
 
 \clearpage
 
-4. Remove summary rows from election.raw data:
-
-- Federal-level summary into a election_federal.
-
-- State-level summary into a election_state.
-
-- Only county-level data is to be in election.
-
 ```{r}
 election_raw <- read.csv(here("data", "election", "election.csv")) %>%
   as_tibble()
@@ -101,6 +99,14 @@ census <- read.csv(here("data", "census","census.csv")) %>%
   as_tibble() %>% 
   mutate(CensusTract = as.factor(CensusTract))
 ```
+
+4. Remove summary rows from `election.raw` data:
+
+- Federal-level summary into a election_federal.
+
+- State-level summary into a election_state.
+
+- Only county-level data is to be in election.
 
 ```{r}
 election_federal <- election_raw %>% 

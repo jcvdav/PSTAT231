@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.17)  6 JUN 2019 16:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.1.17)  12 JUN 2019 10:10
 entering extended mode
 **./final_JCVD.tex
 (final_JCVD.tex
@@ -1018,20 +1018,20 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 164.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 166.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\lm\t1lmtt.fd"
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 165.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 167.
 [2
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 200.
+(Font)              <10> on input line 219.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 200.
+(Font)              <7> on input line 219.
 
 <final_JCVD_files/figure-latex/candidate-votes-1.pdf, id=30, 361.35pt x 433.62p
 t>
@@ -1039,7 +1039,7 @@ File: final_JCVD_files/figure-latex/candidate-votes-1.pdf Graphic file (type pd
 f)
 <use final_JCVD_files/figure-latex/candidate-votes-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/candidate-votes-1.pdf us
-ed on input line 219.
+ed on input line 238.
 (pdftex.def)             Requested size: 361.34912pt x 433.61894pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1051,7 +1051,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.223 \clearpage
+l.242 \clearpage
                  <./final_JCVD_files/figure-latex/candidate-votes-1.pdf>] [5
 
 ]
@@ -1061,7 +1061,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type pd
 f)
 <use final_JCVD_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-7-1.pdf us
-ed on input line 311.
+ed on input line 330.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1073,7 +1073,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.315 \clearpage
+l.334 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-7-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-8-1.pdf, id=68, 469.755pt x 325.21
 5pt>
@@ -1081,7 +1081,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type pd
 f)
 <use final_JCVD_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-8-1.pdf us
-ed on input line 333.
+ed on input line 352.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [8
 
@@ -1090,7 +1090,7 @@ s been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.337 \clearpage
+l.356 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-8-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-9-1.pdf, id=79, 469.755pt x 325.21
 5pt>
@@ -1098,7 +1098,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type pd
 f)
 <use final_JCVD_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-9-1.pdf us
-ed on input line 369.
+ed on input line 388.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [9
 
@@ -1107,7 +1107,7 @@ s been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.373 \clearpage
+l.392 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-9-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-12-1.pdf, id=91, 469.755pt x 325.2
 15pt>
@@ -1115,7 +1115,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-12-1.pdf u
-sed on input line 433.
+sed on input line 452.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1131,13 +1131,13 @@ LaTeX Warning: Text page 11 contains only floats.
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.475 \clearpage
+l.494 \clearpage
                 pdfTeX warning (ext4): destination with the same identifier (na
 me{table.1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.475 \clearpage
+l.494 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-12-1.pdf>] [12
 
 ] [13] [14
@@ -1149,7 +1149,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-20-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-20-1.pdf u
-sed on input line 644.
+sed on input line 663.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [15
 
@@ -1158,7 +1158,7 @@ s been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.675 \end{verbatim}
+l.694 \end{verbatim}
                      <./final_JCVD_files/figure-latex/unnamed-chunk-20-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-22-1.pdf, id=137, 469.755pt x 325.
 215pt>
@@ -1166,14 +1166,14 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-22-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-22-1.pdf u
-sed on input line 685.
+sed on input line 704.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [16pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.689 \clearpage
+l.708 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-22-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-24-1.pdf, id=148, 433.62pt x 433.6
 2pt>
@@ -1181,7 +1181,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-24-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-24-1.pdf u
-sed on input line 722.
+sed on input line 741.
 (pdftex.def)             Requested size: 433.63878pt x 433.63878pt.
 [17
 
@@ -1192,7 +1192,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-25-1.pdf u
-sed on input line 741.
+sed on input line 760.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [18 <./final_JCVD_files/figure-latex/unnamed-chunk-25-1.pdf>] [19
 
@@ -1203,7 +1203,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-31-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-31-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-31-1.pdf u
-sed on input line 837.
+sed on input line 856.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 
 <final_JCVD_files/figure-latex/unnamed-chunk-33-1.pdf, id=175, 469.755pt x 325.
@@ -1212,7 +1212,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-33-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-33-1.pdf u
-sed on input line 860.
+sed on input line 879.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1224,7 +1224,7 @@ s been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.875 \end{Shaded}
+l.894 \end{Shaded}
                    <./final_JCVD_files/figure-latex/unnamed-chunk-31-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-36-1.pdf, id=188, 433.62pt x 361.3
 5pt>
@@ -1232,7 +1232,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-36-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-36-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-36-1.pdf u
-sed on input line 898.
+sed on input line 917.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1242,14 +1242,14 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.912 \clearpage
+l.931 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-33-1.pdf>] [22p
 dfTeX warning (ext4): destination with the same identifier (name{figure.10}) ha
 s been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.912 \clearpage
+l.931 \clearpage
                  <./final_JCVD_files/figure-latex/unnamed-chunk-36-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-40-1.pdf, id=209, 469.755pt x 325.
 215pt>
@@ -1257,13 +1257,13 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-40-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-40-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-40-1.pdf u
-sed on input line 985.
+sed on input line 1004.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \vbox (badness 10000) detected at line 1010
+Underfull \vbox (badness 10000) detected at line 1029
  []
 
 [23
@@ -1273,14 +1273,14 @@ Underfull \vbox (badness 10000) detected at line 1010
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1020 \begin{Shaded}
+l.1039 \begin{Shaded}
                       <./final_JCVD_files/figure-latex/unnamed-chunk-40-1.pdf>]
 [25pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1041 \clearpage
+l.1060 \clearpage
                  ]
 <final_JCVD_files/figure-latex/unnamed-chunk-45-1.pdf, id=234, 469.755pt x 325.
 215pt>
@@ -1288,10 +1288,10 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-45-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-45-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-45-1.pdf u
-sed on input line 1078.
+sed on input line 1097.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \vbox (badness 6758) detected at line 1091
+Underfull \vbox (badness 6758) detected at line 1110
  []
 
 [26
@@ -1301,7 +1301,7 @@ as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1091 \end{Shaded}
+l.1110 \end{Shaded}
                     <./final_JCVD_files/figure-latex/unnamed-chunk-45-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-46-1.pdf, id=246, 469.755pt x 325.
 215pt>
@@ -1309,14 +1309,14 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-46-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-46-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-46-1.pdf u
-sed on input line 1095.
+sed on input line 1114.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [27pdfTeX warning (ext4): destination with the same identifier (name{figure.13}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1128 \end{enumerate}
+l.1147 \end{enumerate}
                        <./final_JCVD_files/figure-latex/unnamed-chunk-46-1.pdf>
 ]
 <final_JCVD_files/figure-latex/unnamed-chunk-50-1.pdf, id=258, 469.755pt x 325.
@@ -1325,7 +1325,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-50-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-50-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-50-1.pdf u
-sed on input line 1182.
+sed on input line 1201.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1337,7 +1337,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-52-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-52-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-52-1.pdf u
-sed on input line 1200.
+sed on input line 1219.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1349,13 +1349,13 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-55-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-55-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-55-1.pdf u
-sed on input line 1238.
+sed on input line 1257.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [28]
-Underfull \vbox (badness 10000) detected at line 1278
+Underfull \vbox (badness 10000) detected at line 1297
  []
 
 [29pdfTeX warning (ext4): destination with the same identifier (name{figure.14}
@@ -1363,7 +1363,7 @@ Underfull \vbox (badness 10000) detected at line 1278
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1278 \end{Shaded}
+l.1297 \end{Shaded}
                     <./final_JCVD_files/figure-latex/unnamed-chunk-50-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-58-1.pdf, id=277, 469.755pt x 325.
 215pt>
@@ -1371,13 +1371,13 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-58-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-58-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-58-1.pdf u
-sed on input line 1292.
+sed on input line 1311.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \vbox (badness 10000) detected at line 1317
+Underfull \vbox (badness 10000) detected at line 1336
  []
 
 [30pdfTeX warning (ext4): destination with the same identifier (name{figure.15}
@@ -1385,27 +1385,27 @@ Underfull \vbox (badness 10000) detected at line 1317
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1317 \end{Shaded}
+l.1336 \end{Shaded}
                     <./final_JCVD_files/figure-latex/unnamed-chunk-52-1.pdf>] [
 31pdfTeX warning (ext4): destination with the same identifier (name{figure.16})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1378 \end{Shaded}
+l.1397 \end{Shaded}
                     <./final_JCVD_files/figure-latex/unnamed-chunk-55-1.pdf>] [
 32pdfTeX warning (ext4): destination with the same identifier (name{figure.17})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1380 \begin{Shaded}
+l.1399 \begin{Shaded}
                      pdfTeX warning (ext4): destination with the same identifie
 r (name{table.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1380 \begin{Shaded}
+l.1399 \begin{Shaded}
                       <./final_JCVD_files/figure-latex/unnamed-chunk-58-1.pdf>]
 
 <final_JCVD_files/figure-latex/unnamed-chunk-64-1.pdf, id=315, 469.755pt x 325.
@@ -1414,14 +1414,14 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-64-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-64-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-64-1.pdf u
-sed on input line 1401.
+sed on input line 1420.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [33pdfTeX warning (ext4): destination with the same identifier (name{figure.18}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1405 \clearpage
+l.1424 \clearpage
                   <./final_JCVD_files/figure-latex/unnamed-chunk-64-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-65-1.pdf, id=326, 469.755pt x 325.
 215pt>
@@ -1429,7 +1429,7 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-65-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-65-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-65-1.pdf u
-sed on input line 1420.
+sed on input line 1439.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [34
 
@@ -1438,7 +1438,7 @@ as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1424 \clearpage
+l.1443 \clearpage
                   <./final_JCVD_files/figure-latex/unnamed-chunk-65-1.pdf>]
 <final_JCVD_files/figure-latex/unnamed-chunk-66-1.pdf, id=337, 469.755pt x 325.
 215pt>
@@ -1446,9 +1446,9 @@ File: final_JCVD_files/figure-latex/unnamed-chunk-66-1.pdf Graphic file (type p
 df)
 <use final_JCVD_files/figure-latex/unnamed-chunk-66-1.pdf>
 Package pdftex.def Info: final_JCVD_files/figure-latex/unnamed-chunk-66-1.pdf u
-sed on input line 1439.
+sed on input line 1458.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1444.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1463.
 [35
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.20}) h
@@ -1456,23 +1456,23 @@ as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1444 \end{document}
+l.1463 \end{document}
                       <./final_JCVD_files/figure-latex/unnamed-chunk-66-1.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1444.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1463.
 (final_JCVD.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1444.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1444.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1463.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1463.
 
 Package rerunfilecheck Info: File `final_JCVD.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1444.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1463.
  ) 
 Here is how much of TeX's memory you used:
- 13315 strings out of 493329
- 195734 string characters out of 3139072
+ 13319 strings out of 493329
+ 195774 string characters out of 3139072
  299725 words of memory out of 3000000
  16495 multiletter control sequences out of 15000+200000
- 68346 words of font info for 104 fonts, out of 3000000 for 9000
+ 68512 words of font info for 106 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  35i,10n,38p,741b,451s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/M
@@ -1490,7 +1490,7 @@ iKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
 ype1/public/lm/lmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmt
 k10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmtt10.pfb><C:/Progr
 am Files/MiKTeX 2.9/fonts/type1/public/lm/lmtti10.pfb>
-Output written on final_JCVD.pdf (35 pages, 3371166 bytes).
+Output written on final_JCVD.pdf (35 pages, 3372575 bytes).
 PDF statistics:
  418 PDF objects out of 1000 (max. 8388607)
  80 named destinations out of 1000 (max. 500000)
